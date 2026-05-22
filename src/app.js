@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -9,6 +10,8 @@ const swaggerSpec = require('./config/swagger');
 const logger = require('./utils/logger');
 const { apiLimiter } = require('./middleware/rateLimiter');
 const { errorHandler, notFoundHandler } = require('./middleware/errorHandler');
+
+const clientBuildPath = path.join(__dirname, '../frontend/dist');
 
 const authRoutes = require('./routes/auth.routes');
 const issueRoutes = require('./routes/issue.routes');
@@ -85,6 +88,20 @@ const createApp = () => {
   app.use('/api/issues', issueRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api/analytics', analyticsRoutes);
+
+  // ─── Frontend static assets ───────────────────────────────────────────────
+  app.use(express.static(clientBuildPath));
+
+  app.get('*', (req, res, next) => {
+    if (
+      req.path.startsWith('/api') ||
+      req.path === '/health' ||
+      req.path.startsWith('/api/docs')
+    ) {
+      return next();
+    }
+    res.sendFile(path.join(clientBuildPath, 'index.html'));
+  });
 
   // ─── 404 handler ──────────────────────────────────────────────────────────
   app.use(notFoundHandler);

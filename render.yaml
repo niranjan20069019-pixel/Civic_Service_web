@@ -1,0 +1,11 @@
+services:
+  - type: web_service
+    name: civic-service-web
+    env: node
+    plan: free
+    branch: main
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production

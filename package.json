@@ -1,11 +1,14 @@
 {
   "name": "civic-issue-api",
   "version": "2.0.0",
+  "private": true,
+  "workspaces": ["frontend"],
   "description": "Production-ready REST API for a Civic Issue Reporting Platform with SLA engine and analytics",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
+    "build": "npm --prefix frontend run build",
     "test": "jest --runInBand --forceExit",
     "lint": "eslint src/ --ext .js"
   },
